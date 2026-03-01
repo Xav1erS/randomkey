@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator - Secure Online Tool</title>
+    <meta name="description" content="Free online password generator. Create strong, secure passwords with custom length and character types. No registration required.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 基础样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+
+        /* 主题变量 - 亮色模式 */
+        :root {
+            --primary-color: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary-color: #7209b7;
+            --text-color: #333;
+            --text-light: #666;
+            --bg-color: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --border-color: #e0e0e0;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        /* 暗色模式 */
+        [data-theme="dark"] {
+            --primary-color: #5a7dff;
+            --primary-dark: #4a6ce8;
+            --secondary-color: #9d4edd;
+            --text-color: #f0f0f0;
+            --text-light: #b0b0b0;
+            --bg-color: #121212;
+            --bg-secondary: #1e1e1e;
+            --border-color: #333;
+            --card-bg: #1e1e1e;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: var(--transition);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 头部样式 */
+        header {
+            background-color: var(--card-bg);
+            padding: 1.5rem 2rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 8px;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--bg-secondary);
+        }
+
+        /* 主内容区域 */
+        main {
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            width: 100%;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 1rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* 工具容器 */
+        .tool-container {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .input-section {
+            margin-bottom: 2rem;
+        }
+
+        .input-section label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            background-color: var(--bg-secondary);
+            color: var(--text-color);
+            transition: var(--transition);
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        /* 密码选项样式 */
+        .password-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .option-group {
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .option-group h3 {
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .slider {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--border-color);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .slider-value {
+            font-weight: 600;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 0.8rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: var(--bg-secondary);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--border-color);
+        }
+
+        /* 结果区域 */
+        .result-section {
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .result-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-box {
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            margin-top: 1rem;
+            word-break: break-word;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 1.2rem;
+            text-align: center;
+            letter-spacing: 1px;
+            color: var(--text-color);
+        }
+
+        .copy-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            margin-top: 1rem;
+        }
+
+        .copy-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* 特性展示 */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1.8rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 0.8rem;
+            font-size: 1.3rem;
+        }
+
+        /* 广告区域 */
+        .ad-container {
+            margin: 2rem auto;
+            max-width: 728px;
+            text-align: center;
+            background-color: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: var(--radius);
+            border: 1px dashed var(--border-color);
+        }
+
+        /* 强度指示器 */
+        .strength-meter {
+            margin-top: 1rem;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--border-color);
+            overflow: hidden;
+        }
+
+        .strength-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .strength-label {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            main {
+                padding: 1rem;
+            }
+            
+            .tool-container {
+                padding: 1.5rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .password-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部 -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-key"></i>
+                <span>Password Generator</span>
+            </div>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- 主内容 -->
+    <main>
+        <!-- 英雄区域 -->
+        <section class="hero">
+            <h1>Secure Password Generator</h1>
+            <p>Create strong, random passwords with custom options. Enhance your online security instantly.</p>
+        </section>
+
+        <!-- 广告区域 -->
+        <div class="ad-container">
+            <!-- Google AdSense广告位 - 替换 YOUR_PUBLISHER_ID 为你的实际发布商ID -->
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID" crossorigin="anonymous"></script>
+            <!-- Password Generator Ad Unit -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
+                 data-ad-slot="1234567890"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+
+        <!-- 工具容器 -->
+        <section class="tool-container">
+            <div class="input-section">
+                <!-- 密码长度选项 -->
+                <div class="option-group">
+                    <h3>Password Length</h3>
+                    <div class="slider-container">
+                        <span class="slider-value" id="lengthValue">16</span>
+                        <input type="range" class="slider" id="lengthSlider" min="8" max="32" value="16">
+                    </div>
+                </div>
+
+                <!-- 字符类型选项 -->
+                <div class="option-group">
+                    <h3>Character Types</h3>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="uppercase" checked>
+                            <span>Uppercase (A-Z)</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="lowercase" checked>
+                            <span>Lowercase (a-z)</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="numbers" checked>
+                            <span>Numbers (0-9)</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="symbols" checked>
+                            <span>Symbols (!@#$%)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 强度指示器 -->
+                <div class="option-group">
+                    <h3>Password Strength</h3>
+                    <div class="strength-meter">
+                        <div class="strength-fill" id="strengthFill"></div>
+                    </div>
+                    <div class="strength-label" id="strengthLabel">Very Strong</div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" id="generateBtn">
+                        <i class="fas fa-key"></i> Generate Password
+                    </button>
+                    <button class="btn btn-secondary" id="clearBtn">
+                        <i class="fas fa-trash"></i> Clear
+                    </button>
+                </div>
+            </div>
+
+            <!-- 结果区域 -->
+            <div class="result-section" id="resultSection">
+                <h2>Generated Password</h2>
+                <div class="result-box" id="resultBox">
+                    Click "Generate Password" to create a secure password.
+                </div>
+                <button class="copy-btn" id="copyBtn">
+                    <i class="fas fa-copy"></i> Copy Password
+                </button>
+            </div>
+        </section>
+
+        <!-- 特性展示 -->
+        <section class="features">
+            <div class="feature-card">
+                <i class="fas fa-shield-alt"></i>
+                <h3>Military-Grade Security</h3>
+                <p>Passwords generated with cryptographically secure random algorithms.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-bolt"></i>
+                <h3>Instant Generation</h3>
+                <p>Create passwords in milliseconds. No delays or waiting time.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-user-secret"></i>
+                <h3>Complete Privacy</h3>
+                <p>All processing happens locally in your browser. No data stored.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-mobile-alt"></i>
+                <h3>Mobile Friendly</h3>
+                <p>Works perfectly on all devices - desktop, tablet, and mobile.</p>
+            </div>
+        </section>
+
+        <!-- 另一个广告区域 -->
+        <div class="ad-container">
+            <!-- Google AdSense广告位 - 替换 YOUR_PUBLISHER_ID 为你的实际发布商ID -->
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID" crossorigin="anonymous"></script>
+            <!-- Password Generator Sidebar Ad -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
+                 data-ad-slot="0987654321"
+                 data-ad-format="rectangle"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-links">
+                <a href="/privacy">Privacy Policy</a>
+                <a href="/terms">Terms of Service</a>
+                <a href="/contact">Contact</a>
+                <a href="/about">About</a>
+            </div>
+            <p>&copy; <span id="currentYear"></span> Password Generator. All rights reserved.</p>
+            <p>This tool is free to use for personal and commercial purposes.</p>
+        </div>
+    </footer>
+
+    <script>
+        // 主题切换
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+        
+        // 检查本地存储的主题偏好
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+        
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+        
+        function updateThemeIcon(theme) {
+            themeIcon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+        }
+        
+        // 密码生成逻辑
+        const generateBtn = document.getElementById('generateBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const lengthSlider = document.getElementById('lengthSlider');
+        const lengthValue = document.getElementById('lengthValue');
+        const uppercaseCheck = document.getElementById('uppercase');
+        const lowercaseCheck = document.getElementById('lowercase');
+        const numbersCheck = document.getElementById('numbers');
+        const symbolsCheck = document.getElementById('symbols');
+        const resultSection = document.getElementById('resultSection');
+        const resultBox = document.getElementById('resultBox');
+        const copyBtn = document.getElementById('copyBtn');
+        const strengthFill = document.getElementById('strengthFill');
+        const strengthLabel = document.getElementById('strengthLabel');
+        
+        // 字符集
+        const charSets = {
+            uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            lowercase: 'abcdefghijklmnopqrstuvwxyz',
+            numbers: '0123456789',
+            symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+        };
+        
+        // 更新滑块显示
+        lengthSlider.addEventListener('input', () => {
+            lengthValue.textContent = lengthSlider.value;
+            updateStrengthIndicator();
+        });
+        
+        // 复选框变化时更新强度
+        [uppercaseCheck, lowercaseCheck, numbersCheck, symbolsCheck].forEach(checkbox => {
+            checkbox.addEventListener('change', updateStrengthIndicator);
+        });
+        
+        // 更新密码强度指示器
+        function updateStrengthIndicator() {
+            const length = parseInt(lengthSlider.value);
+            let selectedSets = 0;
+            if (uppercaseCheck.checked) selectedSets++;
+            if (lowercaseCheck.checked) selectedSets++;
+            if (numbersCheck.checked) selectedSets++;
+            if (symbolsCheck.checked) selectedSets++;
+            
+            // 计算强度分数 (0-100)
+            let score = 0;
+            score += Math.min(length * 3, 30); // 长度贡献最大30分
+            score += selectedSets * 15; // 每种字符类型贡献15分
+            
+            // 确保至少有一种字符类型被选中
+            if (selectedSets === 0) score = 0;
+            
+            // 更新UI
+            const width = Math.min(score, 100);
+            strengthFill.style.width = `${width}%`;
+            
+            // 设置颜色和标签
+            let strengthText, color;
+            if (score >= 80) {
+                strengthText = 'Very Strong';
+                color = '#10b981'; // 绿色
+            } else if (score >= 60) {
+                strengthText = 'Strong';
+                color = '#3b82f6'; // 蓝色
+            } else if (score >= 40) {
+                strengthText = 'Moderate';
+                color = '#f59e0b'; // 黄色
+            } else if (score >= 20) {
+                strengthText = 'Weak';
+                color = '#ef4444'; // 红色
+            } else {
+                strengthText = 'Very Weak';
+                color = '#6b7280'; // 灰色
+            }
+            
+            strengthFill.style.backgroundColor = color;
+            strengthLabel.textContent = strengthText;
+            strengthLabel.style.color = color;
+        }
+        
+        // 初始化强度指示器
+        updateStrengthIndicator();
+        
+        // 生成密码
+        generateBtn.addEventListener('click', () => {
+            const length = parseInt(lengthSlider.value);
+            const options = {
+                uppercase: uppercaseCheck.checked,
+                lowercase: lowercaseCheck.checked,
+                numbers: numbersCheck.checked,
+                symbols: symbolsCheck.checked
+            };
+            
+            // 检查至少选择了一种字符类型
+            const selectedTypes = Object.values(options).filter(v => v).length;
+            if (selectedTypes === 0) {
+                alert('Please select at least one character type.');
+                return;
+            }
+            
+            // 生成密码
+            const password = generatePassword(length, options);
+            
+            // 显示结果
+            resultBox.textContent = password;
+            resultSection.classList.add('active');
+            
+            // 滚动到结果区域
+            resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+        
+        // 密码生成算法
+        function generatePassword(length, options) {
+            // 构建可用字符集
+            let availableChars = '';
+            if (options.uppercase) availableChars += charSets.uppercase;
+            if (options.lowercase) availableChars += charSets.lowercase;
+            if (options.numbers) availableChars += charSets.numbers;
+            if (options.symbols) availableChars += charSets.symbols;
+            
+            // 确保字符集非空
+            if (availableChars.length === 0) {
+                return 'Error: No character types selected';
+            }
+            
+            // 使用cryptographically secure random
+            const array = new Uint32Array(length);
+            window.crypto.getRandomValues(array);
+            
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                password += availableChars[array[i] % availableChars.length];
+            }
+            
+            return password;
+        }
+        
+        // 清空功能
+        clearBtn.addEventListener('click', () => {
+            resultSection.classList.remove('active');
+            resultBox.textContent = 'Click "Generate Password" to create a secure password.';
+            lengthSlider.value = 16;
+            lengthValue.textContent = '16';
+            uppercaseCheck.checked = true;
+            lowercaseCheck.checked = true;
+            numbersCheck.checked = true;
+            symbolsCheck.checked = true;
+            updateStrengthIndicator();
+        });
+        
+        // 复制功能
+        copyBtn.addEventListener('click', async () => {
+            const password = resultBox.textContent;
+            if (!password || password.includes('Click "Generate Password"')) {
+                alert('No password to copy. Please generate a password first.');
+                return;
+            }
+            
+            try {
+                await navigator.clipboard.writeText(password);
+                const originalText = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalText;
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+                alert('Failed to copy password to clipboard.');
+            }
+        });
+        
+        // 设置当前年份
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        
+        // 页面加载时自动聚焦生成按钮
+        window.addEventListener('load', () => {
+            generateBtn.focus();
+        });
+        
+        // 键盘快捷键
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + G 生成密码
+            if ((e.ctrlKey || e.metaKey) && e.key === 'g') {
+                e.preventDefault();
+                generateBtn.click();
+            }
+            
+            // Esc 清空
+            if (e.key === 'Escape') {
+                clearBtn.click();
+            }
+        });
+        
+        // Google AdSense初始化（示例）
+        function initAdSense() {
+            // 这里添加实际的AdSense初始化代码
+            console.log('AdSense initialized (placeholder)');
+        }
+        
+        // 初始化广告
+        if (typeof adsbygoogle !== 'undefined') {
+            initAdSense();
+        }
+    </script>
+</body>
+</html>
