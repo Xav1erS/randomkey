@@ -19,9 +19,10 @@
 
         /* 主题变量 - 亮色模式 */
         :root {
-            --primary-color: #4361ee;
-            --primary-dark: #3a56d4;
-            --secondary-color: #7209b7;
+            --primary-color: #165DFF;
+            --primary-dark: #1452D6;
+            --success-color: #36D399;
+            --error-color: #F87272;
             --text-color: #333;
             --text-light: #666;
             --bg-color: #ffffff;
@@ -37,7 +38,8 @@
         [data-theme="dark"] {
             --primary-color: #5a7dff;
             --primary-dark: #4a6ce8;
-            --secondary-color: #9d4edd;
+            --success-color: #36D399;
+            --error-color: #F87272;
             --text-color: #f0f0f0;
             --text-light: #b0b0b0;
             --bg-color: #121212;
@@ -113,7 +115,7 @@
             flex: 1;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 2rem 3rem;
             width: 100%;
         }
 
@@ -126,7 +128,7 @@
         .hero h1 {
             font-size: 2.5rem;
             margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -162,19 +164,20 @@
 
         .input-field {
             width: 100%;
-            padding: 1rem 1.2rem;
+            padding: 1rem 1.25rem;
             border: 2px solid var(--border-color);
             border-radius: var(--radius);
             font-size: 1rem;
             background-color: var(--bg-secondary);
             color: var(--text-color);
             transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         .input-field:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+            box-shadow: 0 0 0 1px var(--primary-color), 0 2px 8px rgba(0, 0, 0, 0.12);
         }
 
         /* 密码选项样式 */
@@ -230,7 +233,7 @@
 
         .checkbox-group {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             gap: 0.8rem;
         }
 
@@ -251,11 +254,12 @@
             display: flex;
             gap: 1rem;
             flex-wrap: wrap;
-            margin-top: 1.5rem;
+            margin-top: 1rem;
         }
 
         .btn {
             padding: 1rem 2rem;
+            min-height: 44px;
             border: none;
             border-radius: var(--radius);
             font-weight: 600;
@@ -271,6 +275,8 @@
         .btn-primary {
             background-color: var(--primary-color);
             color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s ease, background-color 0.2s ease;
         }
 
         .btn-primary:hover {
@@ -278,10 +284,17 @@
             transform: translateY(-2px);
         }
 
+        .btn-primary.clicked {
+            transform: translateY(0);
+            background-color: var(--primary-dark);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
         .btn-secondary {
             background-color: var(--bg-secondary);
             color: var(--text-color);
             border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         .btn-secondary:hover {
@@ -302,6 +315,28 @@
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 密钥旋转加载动画 */
+        @keyframes keySpin {
+            0% { 
+                transform: rotate(0deg) scale(1);
+                color: var(--primary-color);
+            }
+            50% { 
+                transform: rotate(180deg) scale(1.2);
+                color: var(--primary-dark);
+            }
+            100% { 
+                transform: rotate(360deg) scale(1);
+                color: var(--primary-color);
+            }
+        }
+        
+        .key-loading-animation {
+            display: inline-block;
+            animation: keySpin 1.5s ease-in-out infinite;
+            font-size: 2rem;
         }
 
         .result-box {
@@ -411,6 +446,42 @@
             border: 1px dashed var(--border-color);
         }
 
+        /* 眼睛图标样式 */
+        .eye-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: help;
+            position: relative;
+            transition: transform 0.2s ease;
+        }
+        
+        .eye-icon:hover {
+            transform: scale(1.2);
+        }
+        
+        .eye-icon .tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--text-color);
+            color: var(--bg-color);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 1001;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .eye-icon:hover .tooltip {
+            opacity: 1;
+        }
+
         /* 强度指示器 */
         .strength-meter {
             margin-top: 1rem;
@@ -440,7 +511,7 @@
             }
             
             main {
-                padding: 1rem;
+                padding: 1.5rem;
             }
             
             .tool-container {
@@ -473,6 +544,28 @@
             
             .password-options {
                 grid-template-columns: 1fr;
+            }
+            
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+            
+            /* 移动端固定Generate按钮 */
+            .button-group {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background-color: var(--card-bg);
+                padding: 1rem;
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+                z-index: 998;
+                border-top: 1px solid var(--border-color);
+            }
+            
+            /* 为固定按钮腾出空间 */
+            .tool-container {
+                padding-bottom: 120px;
             }
         }
         /* 标签页样式 */
@@ -588,25 +681,26 @@
             flex: 1;
         }
         
-        /* 历史记录面板样式 */
+        /* 历史记录面板样式 - 底部抽屉式设计 */
         .history-panel {
             position: fixed;
-            top: 0;
-            right: -350px;
-            width: 350px;
-            height: 100vh;
+            bottom: -350px;
+            left: 0;
+            right: 0;
+            height: 350px;
             background-color: var(--card-bg);
-            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-            transition: right 0.3s ease;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+            transition: bottom 0.3s ease-out;
             z-index: 1000;
-            border-left: 1px solid var(--border-color);
+            border-top: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            border-radius: 20px 20px 0 0;
         }
         
         .history-panel.active {
-            right: 0;
+            bottom: 0;
         }
         
         .history-header {
@@ -717,14 +811,14 @@
         
         .history-toggle-btn {
             position: fixed;
-            top: 50%;
-            right: 0;
-            transform: translateY(-50%);
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
             background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 0.75rem 1rem;
-            border-radius: 8px 0 0 8px;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
             cursor: pointer;
             z-index: 999;
             transition: var(--transition);
@@ -732,22 +826,27 @@
             align-items: center;
             gap: 0.5rem;
             font-weight: 600;
+            box-shadow: 0 4px 12px rgba(22, 93, 255, 0.3);
         }
         
         .history-toggle-btn:hover {
             background-color: var(--primary-dark);
-            padding-right: 1.5rem;
+            transform: translateX(-50%) translateY(-2px);
+            box-shadow: 0 6px 16px rgba(22, 93, 255, 0.4);
         }
         
         /* 移动端历史记录面板适配 */
         @media (max-width: 768px) {
             .history-panel {
                 width: 100%;
-                right: -100%;
+                height: 40vh;
+                bottom: -40vh;
             }
             
             .history-toggle-btn {
-                display: none;
+                bottom: 10px;
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
             }
             
             .history-item {
@@ -837,12 +936,19 @@
     </script>
 </head>
 <body>
+    <!-- 页面加载动画 -->
+    <div id="pageLoadingOverlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--bg-color); display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.3s ease;">
+        <div class="key-loading-animation">
+            <i class="fas fa-key"></i>
+        </div>
+    </div>
+    
     <!-- 头部 -->
     <header>
         <div class="header-container">
             <div class="logo">
                 <i class="fas fa-key"></i>
-                <span>randomkey</span>
+                <span>RandomKey</span>
             </div>
             <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
                 <i class="fas fa-moon"></i>
@@ -1013,6 +1119,9 @@
                     <div class="slider-container">
                         <span class="slider-value" id="lengthValue">16</span>
                         <input type="range" class="slider" id="lengthSlider" min="4" max="64" value="16">
+                        <span class="eye-icon" id="excludeSimilarEyeIcon" style="display: none; margin-left: 8px;" title="Excluding similar characters: 0/O, 1/l, I/i">
+                            <i class="fas fa-eye" style="color: var(--primary-color); font-size: 1.2rem;"></i>
+                        </span>
                     </div>
                 </div>
 
@@ -1071,12 +1180,83 @@
                         <span id="generateBtnLoading" style="display: none; margin-left: 8px;">
                             <i class="fas fa-spinner fa-spin"></i> Generating...
                         </span>
-                        <span id="generateBtnSuccess" style="display: none; margin-left: 8px; color: #10b981;">
+                        <span id="generateBtnSuccess" style="display: none; margin-left: 8px; color: var(--success-color);">
                             <i class="fas fa-check"></i> Key generated successfully!
                         </span>
                     </button>
                     <button class="btn btn-secondary" id="clearBtn">
                         <i class="fas fa-trash"></i> Clear
+                    </button>
+                </div>
+            </div>
+            
+            <!-- API Keys 选项卡内容 -->
+            <div class="tab-content" id="apikey-tab">
+                <div class="input-section">
+                    <!-- API 密钥长度选项 -->
+                    <div class="option-group">
+                        <h3>API Key Length</h3>
+                        <div class="slider-container">
+                            <span class="slider-value" id="keyLengthValue">32</span>
+                            <input type="range" class="slider" id="keyLengthSlider" min="32" max="128" step="32" value="32">
+                        </div>
+                    </div>
+                    
+                    <!-- 字符类型选项 -->
+                    <div class="option-group">
+                        <h3>Character Type</h3>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="radio" id="lettersOnly" name="charType" checked>
+                                <span>Letters only (A-Z, a-z)</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="radio" id="lettersNumbers" name="charType">
+                                <span>Letters + Numbers (A-Z, a-z, 0-9)</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- 高级设置切换按钮 -->
+                    <div style="text-align: center; margin: 1rem 0;">
+                        <button class="toggle-advanced" id="toggleAdvanced">
+                            <i class="fas fa-cog"></i> Advanced Settings
+                        </button>
+                    </div>
+                    
+                    <!-- 高级设置面板 -->
+                    <div class="advanced-settings" id="advancedSettings">
+                        <div class="prefix-suffix-input">
+                            <div style="flex: 1;">
+                                <label for="prefix">Prefix (optional)</label>
+                                <input type="text" class="input-field" id="prefix" placeholder="e.g., sk_live_">
+                            </div>
+                            <div style="flex: 1;">
+                                <label for="suffix">Suffix (optional)</label>
+                                <input type="text" class="input-field" id="suffix" placeholder="e.g., _2024">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 按钮组 -->
+                    <div class="button-group">
+                        <button class="btn btn-primary" id="generateApiKeyBtn">
+                            <i class="fas fa-key"></i> Generate API Key
+                        </button>
+                        <button class="btn btn-secondary" id="clearApiKeyBtn">
+                            <i class="fas fa-trash"></i> Clear
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- API Key 结果区域 -->
+                <div class="result-section" id="apiKeyResultSection" style="display: none; margin-top: 2rem;">
+                    <h2>Generated API Key</h2>
+                    <div class="result-box" id="apiKeyResultBox">
+                        Click "Generate API Key" to create a secure API key.
+                    </div>
+                    <button class="copy-btn" id="copyApiKeyBtn">
+                        <i class="fas fa-copy"></i> Copy API Key
                     </button>
                 </div>
             </div>
@@ -1123,12 +1303,12 @@
         <!-- About Us, Terms, Privacy -->
         <section id="about" style="display: none; margin: 2rem 0; padding: 2rem; background: var(--bg-secondary); border-radius: var(--radius);">
             <h2>About Us</h2>
-            <p>randomkey.dev is a free online tool created to help developers and security-conscious users generate strong random keys and passwords. Our mission is to provide simple, secure, and accessible tools for everyday security needs.</p>
+            <p>RandomKey.dev is a free online tool created to help developers and security-conscious users generate strong random keys and passwords. Our mission is to provide simple, secure, and accessible tools for everyday security needs.</p>
             <p>All tools are open-source and process data locally in your browser for maximum privacy.</p>
         </section>
         <section id="terms" style="display: none; margin: 2rem 0; padding: 2rem; background: var(--bg-secondary); border-radius: var(--radius);">
             <h2>Terms of Use</h2>
-            <p>By using randomkey.dev, you agree to the following terms:</p>
+            <p>By using RandomKey.dev, you agree to the following terms:</p>
             <ul>
                 <li>This tool is provided "as is" without warranties of any kind.</li>
                 <li>You are responsible for how you use generated keys and passwords.</li>
@@ -1206,8 +1386,8 @@
                 <a href="/contact">Contact</a>
                 <a href="#about">About</a>
             </div>
-            <p>&copy; <span id="currentYear"></span> randomkey. All rights reserved.</p>
-            <p>randomkey.dev | A simple random key/password generator</p>
+            <p>&copy; <span id="currentYear"></span> RandomKey. All rights reserved.</p>
+            <p>RandomKey.dev | A simple random key/password generator</p>
             <p>This tool is free to use for personal and commercial purposes.</p>
         </div>
     </footer>
@@ -1317,11 +1497,16 @@
         // 初始化强度指示器
         updateStrengthIndicator();
         
+
+        
         // 生成密码
         generateBtn.addEventListener('click', async () => {
             const generateBtnText = document.getElementById('generateBtnText');
             const generateBtnLoading = document.getElementById('generateBtnLoading');
             const generateBtnSuccess = document.getElementById('generateBtnSuccess');
+            
+            // 点击动画：添加clicked类
+            generateBtn.classList.add('clicked');
             
             // 获取输入值
             const length = parseInt(lengthSlider.value);
@@ -1338,6 +1523,7 @@
             const selectedTypes = Object.values(options).filter(v => v).length;
             if (selectedTypes === 0) {
                 alert('Please select at least one character type.');
+                generateBtn.classList.remove('clicked');
                 return;
             }
             
@@ -1347,14 +1533,20 @@
             generateBtnSuccess.style.display = 'none';
             generateBtn.disabled = true;
             
+            // 移动端震动反馈
+            if ('vibrate' in navigator) {
+                navigator.vibrate(50);
+            }
+            
             // 模拟短暂延迟以显示加载状态（实际生成很快）
             await new Promise(resolve => setTimeout(resolve, 300));
             
             // 生成密码
             const password = generatePassword(length, options);
             
-            // 显示成功状态
+            // 显示成功状态：按钮文字变为Regenerate，添加绿色对勾图标
             generateBtnLoading.style.display = 'none';
+            generateBtnSuccess.innerHTML = '<i class="fas fa-check" style="color: var(--success-color);"></i> Regenerate';
             generateBtnSuccess.style.display = 'inline';
             
             // 显示结果
@@ -1364,11 +1556,12 @@
             // 滚动到结果区域
             resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             
-            // 3秒后重置按钮状态
+            // 3秒后重置按钮状态，移除点击动画类
             setTimeout(() => {
                 generateBtnSuccess.style.display = 'none';
                 generateBtnText.style.display = 'inline';
                 generateBtn.disabled = false;
+                generateBtn.classList.remove('clicked');
             }, 3000);
             
             // 保存到历史记录
@@ -1453,6 +1646,20 @@
             });
         }
         
+        // 眼睛图标提示功能
+        const excludeSimilarCheckbox = document.getElementById('excludeSimilar');
+        const eyeIconElement = document.getElementById('excludeSimilarEyeIcon');
+        
+        if (excludeSimilarCheckbox && eyeIconElement) {
+            // 初始状态
+            eyeIconElement.style.display = excludeSimilarCheckbox.checked ? 'inline-flex' : 'none';
+            
+            // 监听复选框变化
+            excludeSimilarCheckbox.addEventListener('change', () => {
+                eyeIconElement.style.display = excludeSimilarCheckbox.checked ? 'inline-flex' : 'none';
+            });
+        }
+        
         // 清空功能
         clearBtn.addEventListener('click', () => {
             resultSection.classList.remove('active');
@@ -1506,6 +1713,15 @@
         // 页面加载时自动聚焦生成按钮
         window.addEventListener('load', () => {
             generateBtn.focus();
+            
+            // 隐藏页面加载动画
+            const loadingOverlay = document.getElementById('pageLoadingOverlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    loadingOverlay.style.display = 'none';
+                }, 300);
+            }
         });
         
         // 键盘快捷键
@@ -1713,5 +1929,47 @@
             });
         }
     </script>
+<script>
+// 选项卡切换功能（修复版本）
+document.addEventListener('DOMContentLoaded', function() {
+    // 标签页切换功能
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    console.log('Tab切换脚本加载，找到按钮:', tabBtns.length);
+    
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const tabId = this.getAttribute('data-tab');
+            console.log('选项卡点击:', tabId);
+            
+            // 更新活动按钮
+            tabBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // 显示对应内容
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+                if (content.id === tabId + '-tab') {
+                    content.classList.add('active');
+                }
+            });
+            
+            // 隐藏结果区域（如果可见）
+            const resultSection = document.getElementById('resultSection');
+            const apiKeyResultSection = document.getElementById('apiKeyResultSection');
+            if (resultSection) resultSection.classList.remove('active');
+            if (apiKeyResultSection) apiKeyResultSection.style.display = 'none';
+        });
+    });
+    
+    // 初始化标签页状态
+    window.addEventListener('load', function() {
+        const passwordTab = document.getElementById('password-tab');
+        const apiKeyTab = document.getElementById('apikey-tab');
+        if (passwordTab) passwordTab.classList.add('active');
+        if (apiKeyTab) apiKeyTab.classList.remove('active');
+    });
+});
+</script>
 </body>
 </html>
